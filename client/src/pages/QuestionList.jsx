@@ -27,9 +27,13 @@ const QuestionList = () => {
         {/* Top Header */}
         <div className="qlist-header-row">
           <div className="qlist-logo">StackIt</div>
-          <button onClick={() => navigate('/ask')} className="qlist-ask-btn">
-            Ask Question
-          </button>
+
+          {currentUser && (
+            <button onClick={() => navigate('/ask')} className="qlist-ask-btn">
+              Ask Question
+            </button>
+          )}
+
           <button className="qlist-filter-btn">Newest</button>
           <button className="qlist-filter-btn">Unanswered</button>
           <button className="qlist-filter-btn">More ▾</button>
@@ -52,8 +56,6 @@ const QuestionList = () => {
             <Link to="/login" className="qlist-login-btn">Login</Link>
           )}
         </div>
-
-        <Breadcrumbs />
 
         {/* Question Feed */}
         <div className="qlist-feed">
@@ -84,7 +86,7 @@ const QuestionList = () => {
                   />
 
                   <div className="question-meta">
-                    <span>By {question.author}</span>
+                    <span>By <Link to={`/users/${question.author_id || ''}`}>{question.author}</Link></span>
                     <span>•</span>
                     <span>{new Date(question.created_at).toLocaleDateString()}</span>
                     <span>•</span>
@@ -111,7 +113,6 @@ const QuestionList = () => {
           <span className="qlist-page-arrow">&gt;</span>
         </div>
       </main>
-
       <RightPanel />
     </div>
   );

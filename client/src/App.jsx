@@ -24,8 +24,12 @@ function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/questions/:id" element={<QuestionDetail />} />
+
+            {/* Merged routes from both branches */}
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/profile/:tab" element={<UserProfile />} />
+            <Route path="/users/:id" element={<UserProfile />} />
+
             <Route path="*" element={<div>404 Not Found</div>} />
           </Routes>
         </main>

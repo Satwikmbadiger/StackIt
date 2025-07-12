@@ -6,12 +6,13 @@ from datetime import datetime
 answers = Blueprint('answers', __name__)
 
 @answers.route('/answers', methods=['POST'])
-@jwt_required()
 def create_answer():
     try:
         data = request.get_json()
-        user_id = get_jwt_identity()
+        user_id = data.get('user_id')  # Accept user_id from frontend for demo
         
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
         if not data or not data.get('questionId') or not data.get('content'):
             return jsonify({"error": "Question ID and content are required"}), 400
         
@@ -34,7 +35,7 @@ def create_answer():
         db.session.flush()  # Get the answer ID
         
         # Create notification for question owner
-        if question.user_id != user_id:  # Don't notify if answering own question
+        if question.user_id != int(user_id):  # Don't notify if answering own question
             notification = Notification(
                 user_id=question.user_id,
                 message=f"{User.query.get(user_id).username} answered your question: {question.title}",

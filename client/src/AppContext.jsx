@@ -15,22 +15,27 @@ export const AppProvider = ({ children }) => {
     (async () => {
       setLoading(true);
 
-      // Auth check
-      if (api.hasToken()) {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+
+      if (api.hasToken() && storedUser) {
         try {
           const userRes = await api.getCurrentUser();
           if (userRes.success) {
             setCurrentUser({ ...userRes.user, notifications: [], onMarkAllRead: markAllRead });
+            localStorage.setItem('user', JSON.stringify(userRes.user));
           } else {
             api.removeToken();
+            localStorage.removeItem('user');
           }
         } catch (error) {
           console.error('Auth check failed:', error);
           api.removeToken();
+          localStorage.removeItem('user');
         }
+      } else if (storedUser) {
+        setCurrentUser({ ...storedUser, notifications: [], onMarkAllRead: markAllRead });
       }
 
-      // Load questions
       try {
         const qs = await api.getQuestions();
         setQuestions(qs);
@@ -49,6 +54,7 @@ export const AppProvider = ({ children }) => {
       setLoading(false);
       if (res.success) {
         api.setToken(res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
         setCurrentUser({ ...res.user, notifications: [], onMarkAllRead: markAllRead });
         setNotifications([]);
         setNotification({ message: 'Login successful!', type: 'success' });
@@ -79,6 +85,7 @@ export const AppProvider = ({ children }) => {
 
   const logout = () => {
     api.removeToken();
+    localStorage.removeItem('user');
     setCurrentUser(null);
     setNotifications([]);
     setNotification({ message: 'Logged out.', type: 'info' });
@@ -87,12 +94,20 @@ export const AppProvider = ({ children }) => {
   const addNotification = (message) => {
     const newNotif = { message, read: false, time: new Date().toLocaleTimeString() };
     setNotifications(prev => [newNotif, ...prev].slice(0, 10));
-    if (currentUser) setCurrentUser(u => ({ ...u, notifications: [newNotif, ...(u.notifications || [])].slice(0, 10) }));
+    if (currentUser)
+      setCurrentUser(u => ({
+        ...u,
+        notifications: [newNotif, ...(u.notifications || [])].slice(0, 10)
+      }));
   };
 
   const markAllRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-    if (currentUser) setCurrentUser(u => ({ ...u, notifications: (u.notifications || []).map(n => ({ ...n, read: true })) }));
+    if (currentUser)
+      setCurrentUser(u => ({
+        ...u,
+        notifications: (u.notifications || []).map(n => ({ ...n, read: true }))
+      }));
   };
 
   const refreshQuestions = async () => {
@@ -118,23 +133,21 @@ export const AppProvider = ({ children }) => {
 
   const postAnswer = async (questionId, data) => {
     setLoading(true);
-    const a = await api.postAnswer({ questionId, ...data });
+    const a = await api.postAnswer({ questionId, ...data, user_id: currentUser?.id });
     await refreshQuestions();
     setLoading(false);
     return a;
   };
 
   const vote = async (type, id, delta) => {
-    setQuestions(prev => prev.map(q => {
-      if (type === 'questions' && q.id === id) {
-        return {
-          ...q,
-          votes: (q.votes || 0) + delta,
-          userVote: delta
-        };
-      }
-      return q;
-    }));
+    setQuestions(prev =>
+      prev.map(q => {
+        if (type === 'questions' && q.id === id) {
+          return { ...q, votes: (q.votes || 0) + delta, userVote: delta };
+        }
+        return q;
+      })
+    );
 
     try {
       await api.vote({ type, id, delta, user_id: currentUser?.id });
@@ -155,7 +168,7 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        currentUser: currentUser ? { ...currentUser, notifications: notifications, onMarkAllRead: markAllRead } : null,
+        currentUser: currentUser ? { ...currentUser, notifications, onMarkAllRead: markAllRead } : null,
         questions,
         loading,
         notification,
