@@ -64,6 +64,8 @@
 }
 
 .editor-content {
+  direction: ltr;
+  unicode-bidi: plaintext;
   min-height: 150px;
   padding: 16px;
   outline: none;

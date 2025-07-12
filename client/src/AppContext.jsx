@@ -131,10 +131,27 @@ export const AppProvider = ({ children }) => {
 
   // Voting
   const vote = async (type, id, delta) => {
-    setLoading(true);
-    await api.vote({ type, id, delta });
-    await refreshQuestions();
-    setLoading(false);
+    // Optimistically update the UI
+    setQuestions(prevQuestions => prevQuestions.map(q => {
+      if (type === 'questions' && q.id === id) {
+        return {
+          ...q,
+          votes: (q.votes || 0) + delta,
+          userVote: delta // or set to 0 if removing vote
+        };
+      }
+      return q;
+    }));
+    // Fire and forget backend update
+    api.vote({ type, id, delta, user_id: currentUser?.id })
+      .then(() => {
+        // Optionally, refresh from backend in the background
+        refreshQuestions();
+      })
+      .catch(() => {
+        // Optionally, revert optimistic update on error
+        refreshQuestions();
+      });
   };
 
   // Accept answer

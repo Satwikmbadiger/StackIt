@@ -18,12 +18,6 @@ const handleResponse = async (response) => {
   return response.json();
 };
 
-// Helper function to get auth headers
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  return token ? { 'Authorization': `Bearer ${token}` } : {};
-};
-
 export const api = {
   // Auth endpoints
   async login(username, password) {
@@ -49,7 +43,6 @@ export const api = {
     const response = await fetch(`${API_BASE}/questions`, {
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       }
     });
     return handleResponse(response);
@@ -59,7 +52,6 @@ export const api = {
     const response = await fetch(`${API_BASE}/questions/${id}`, {
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       }
     });
     return handleResponse(response);
@@ -70,7 +62,6 @@ export const api = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       },
       body: JSON.stringify(data),
     });
@@ -83,7 +74,6 @@ export const api = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       },
       body: JSON.stringify(data),
     });
@@ -96,7 +86,6 @@ export const api = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       },
       body: JSON.stringify(data),
     });
@@ -109,7 +98,6 @@ export const api = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       },
       body: JSON.stringify(data),
     });
@@ -121,7 +109,6 @@ export const api = {
     const response = await fetch(`${API_BASE}/notifications`, {
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       }
     });
     return handleResponse(response);
@@ -132,7 +119,6 @@ export const api = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       }
     });
     return handleResponse(response);
@@ -143,7 +129,6 @@ export const api = {
     const response = await fetch(`${API_BASE}/auth/me`, {
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       }
     });
     return handleResponse(response);
@@ -152,12 +137,6 @@ export const api = {
   // Utility function to check if user is authenticated
   isAuthenticated() {
     return localStorage.getItem('token') !== null;
-  },
-
-  // Add auth token to requests
-  getAuthHeaders() {
-    const token = localStorage.getItem('token');
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
   },
 
   // Store token after login

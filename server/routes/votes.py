@@ -6,11 +6,12 @@ from datetime import datetime
 votes = Blueprint('votes', __name__)
 
 @votes.route('/votes', methods=['POST'])
-@jwt_required()
 def vote():
     try:
         data = request.get_json()
-        user_id = get_jwt_identity()
+        user_id = data.get('user_id')
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
         
         if not data or not data.get('type') or not data.get('id') or not data.get('delta'):
             return jsonify({"error": "Type, ID, and delta are required"}), 400
@@ -20,9 +21,9 @@ def vote():
         delta = data['delta']  # 1 for upvote, -1 for downvote, 0 for remove vote
         
         if vote_type == 'questions':
-            return handle_question_vote(user_id, item_id, delta)
+            return handle_question_vote(int(user_id), item_id, delta)
         elif vote_type == 'answers':
-            return handle_answer_vote(user_id, item_id, delta)
+            return handle_answer_vote(int(user_id), item_id, delta)
         else:
             return jsonify({"error": "Invalid vote type"}), 400
             

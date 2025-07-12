@@ -16,6 +16,19 @@ const RichTextEditor = ({ value, onChange, placeholder = "Write your content her
     onChange(editorRef.current.innerHTML);
   };
 
+  // Handle keyboard shortcuts for undo/redo
+  const handleKeyDown = (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+      e.preventDefault();
+      document.execCommand('undo');
+      onChange(editorRef.current.innerHTML);
+    } else if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) {
+      e.preventDefault();
+      document.execCommand('redo');
+      onChange(editorRef.current.innerHTML);
+    }
+  };
+
   const insertEmoji = (emoji) => {
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
@@ -159,9 +172,12 @@ const RichTextEditor = ({ value, onChange, placeholder = "Write your content her
         ref={editorRef}
         className="editor-content"
         contentEditable
+        dir="ltr"
         dangerouslySetInnerHTML={{ __html: value }}
         onInput={(e) => onChange(e.target.innerHTML)}
+        onBlur={(e) => onChange(e.target.innerHTML)}
         onPaste={handlePaste}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         suppressContentEditableWarning
       />
