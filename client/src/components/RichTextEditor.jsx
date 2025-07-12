@@ -74,8 +74,9 @@ const RichTextEditor = ({ value, onChange, placeholder = "Write your content her
     onChange(editorRef.current.innerHTML);
   };
 
+  // Set initial value or update when value changes
   React.useEffect(() => {
-    if (editorRef.current && value && editorRef.current.innerHTML !== value) {
+    if (editorRef.current && value !== undefined && editorRef.current.innerHTML !== value) {
       editorRef.current.innerHTML = value;
     }
   }, [value]);
@@ -179,8 +180,7 @@ const RichTextEditor = ({ value, onChange, placeholder = "Write your content her
         className="editor-content"
         contentEditable
         dir="ltr"
-        onInput={null}
-        onBlur={(e) => onChange(e.target.innerHTML)}
+        onBlur={e => onChange(e.target.innerHTML)}
         onPaste={handlePaste}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}

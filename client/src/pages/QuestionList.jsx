@@ -44,7 +44,7 @@ const QuestionList = () => {
                 <div className="question-description" dangerouslySetInnerHTML={{ __html: question.description }} />
                 
                 <div className="question-meta">
-                  <span>By {question.author}</span>
+                  <span>By <Link to={`/users/${question.author_id || ''}`}>{question.author}</Link></span>
                   <span>•</span>
                   <span>{new Date(question.created_at).toLocaleDateString()}</span>
                   <span>•</span>

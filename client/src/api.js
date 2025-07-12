@@ -70,6 +70,7 @@ export const api = {
 
   // Answers endpoints
   async postAnswer(data) {
+    // Use user_id from data (passed from context) like vote function
     const response = await fetch(`${API_BASE}/answers`, {
       method: 'POST',
       headers: {
@@ -94,10 +95,12 @@ export const api = {
 
   // Accept answer endpoint
   async acceptAnswer(data) {
+    const token = localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/answers/accept`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
       },
       body: JSON.stringify(data),
     });
@@ -131,6 +134,12 @@ export const api = {
         'Content-Type': 'application/json',
       }
     });
+    return handleResponse(response);
+  },
+
+  // Get user by ID
+  async getUser(id) {
+    const response = await fetch(`${API_BASE}/users/${id}`);
     return handleResponse(response);
   },
 

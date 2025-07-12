@@ -17,19 +17,27 @@ export const AppProvider = ({ children }) => {
     (async () => {
       setLoading(true);
       
-      // Check if user is authenticated
-      if (api.hasToken()) {
+      // Check if user is authenticated (check both token and user in localStorage)
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (api.hasToken() && user) {
         try {
           const userRes = await api.getCurrentUser();
           if (userRes.success) {
             setCurrentUser({ ...userRes.user, notifications: [], onMarkAllRead: markAllRead });
+            // Update localStorage with fresh user data
+            localStorage.setItem('user', JSON.stringify(userRes.user));
           } else {
             api.removeToken(); // Remove invalid token
+            localStorage.removeItem('user'); // Remove invalid user
           }
         } catch (error) {
           console.error('Auth check failed:', error);
           api.removeToken(); // Remove invalid token
+          localStorage.removeItem('user'); // Remove invalid user
         }
+      } else if (user) {
+        // If we have user in localStorage but no token, just use the stored user
+        setCurrentUser({ ...user, notifications: [], onMarkAllRead: markAllRead });
       }
       
       // Fetch questions
@@ -52,6 +60,8 @@ export const AppProvider = ({ children }) => {
       setLoading(false);
       if (res.success) {
         api.setToken(res.token);
+        // Store user object in localStorage for user_id access
+        localStorage.setItem('user', JSON.stringify(res.user));
         setCurrentUser({ ...res.user, notifications: [], onMarkAllRead: markAllRead });
         setNotifications([]);
         setNotification({ message: 'Login successful!', type: 'success' });
@@ -82,6 +92,7 @@ export const AppProvider = ({ children }) => {
 
   const logout = () => {
     api.removeToken();
+    localStorage.removeItem('user'); // Remove user from localStorage
     setCurrentUser(null);
     setNotifications([]);
     setNotification({ message: 'Logged out.', type: 'info' });
@@ -123,7 +134,7 @@ export const AppProvider = ({ children }) => {
   // Answers
   const postAnswer = async (questionId, data) => {
     setLoading(true);
-    const a = await api.postAnswer({ questionId, ...data });
+    const a = await api.postAnswer({ questionId, ...data, user_id: currentUser?.id });
     await refreshQuestions();
     setLoading(false);
     return a;
