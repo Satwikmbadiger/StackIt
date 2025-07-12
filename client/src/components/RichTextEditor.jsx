@@ -74,6 +74,12 @@ const RichTextEditor = ({ value, onChange, placeholder = "Write your content her
     onChange(editorRef.current.innerHTML);
   };
 
+  React.useEffect(() => {
+    if (editorRef.current && value && editorRef.current.innerHTML !== value) {
+      editorRef.current.innerHTML = value;
+    }
+  }, [value]);
+
   return (
     <div className="rich-text-editor">
       <div className="toolbar">
@@ -173,8 +179,7 @@ const RichTextEditor = ({ value, onChange, placeholder = "Write your content her
         className="editor-content"
         contentEditable
         dir="ltr"
-        dangerouslySetInnerHTML={{ __html: value }}
-        onInput={(e) => onChange(e.target.innerHTML)}
+        onInput={null}
         onBlur={(e) => onChange(e.target.innerHTML)}
         onPaste={handlePaste}
         onKeyDown={handleKeyDown}
