@@ -24,14 +24,16 @@ const QuestionList = () => {
     <div className="qlayout-root">
       <Sidebar />
       <main className="qlayout-main">
+        {/* Top Header */}
         <div className="qlist-header-row">
           <div className="qlist-logo">StackIt</div>
-          {currentUser && (
-            <button onClick={() => navigate('/ask')} className="qlist-ask-btn">Ask Question</button>
-          )}
+          <button onClick={() => navigate('/ask')} className="qlist-ask-btn">
+            Ask Question
+          </button>
           <button className="qlist-filter-btn">Newest</button>
           <button className="qlist-filter-btn">Unanswered</button>
           <button className="qlist-filter-btn">More ▾</button>
+
           <input
             className="qlist-search"
             type="text"
@@ -39,9 +41,12 @@ const QuestionList = () => {
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
+
           {currentUser ? (
             <Link to="/profile" className="qlist-login-btn">
-              <span className="qlist-avatar">{currentUser.username[0].toUpperCase()}</span>
+              <span className="qlist-avatar">
+                {currentUser.username[0].toUpperCase()}
+              </span>
             </Link>
           ) : (
             <Link to="/login" className="qlist-login-btn">Login</Link>
@@ -50,6 +55,7 @@ const QuestionList = () => {
 
         <Breadcrumbs />
 
+        {/* Question Feed */}
         <div className="qlist-feed">
           {loading ? (
             <div className="qlist-loading">Loading questions...</div>
@@ -96,6 +102,7 @@ const QuestionList = () => {
           )}
         </div>
 
+        {/* Pagination Stub */}
         <div className="qlist-pagination">
           <span className="qlist-page-arrow">&lt;</span>
           {[1, 2, 3, 4, 5].map(num => (
@@ -104,6 +111,7 @@ const QuestionList = () => {
           <span className="qlist-page-arrow">&gt;</span>
         </div>
       </main>
+
       <RightPanel />
     </div>
   );
