@@ -1,4 +1,4 @@
-from app import db
+from models import db
 from datetime import datetime
 
 # Association table for many-to-many relationship between questions and tags

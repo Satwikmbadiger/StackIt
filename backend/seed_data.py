@@ -7,7 +7,8 @@ import sys
 from datetime import datetime, timedelta
 import random
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+from models import db
 from werkzeug.security import generate_password_hash
 
 # Add parent directory to path
@@ -21,11 +22,14 @@ from models.vote import Vote
 from models.tag import Tag
 from models.notification import Notification
 
+# Load environment variables
+load_dotenv()
+
 # Create Flask app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://postgres:postgres@localhost/stackit')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///stackit.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db.init_app(app)
 
 def seed_database():
     """Seed the database with sample data"""
@@ -467,8 +471,8 @@ function Navbar() {
       <div className={`mobile-menu md:hidden ${isMenuOpen ? '' : 'hidden'}`}>
         <a href="#" className="block px-3 py-2 rounded-md text-base font-medium">Home</a>
         <a href="#" className="block px-3 py-2 rounded-md text-base font-medium">About</a>
-        <a href="#" className="block px-3 py-2 rounded-md text-base font-medium">Services</a>
-        <a href="#" className="block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+        <a href="#" className="block px-3 py-2 rounded-md textBase font-medium">Services</a>
+        <a href="#" className="block px-3 py-2 rounded-md textBase font-medium">Contact</a>
       </div>
     </nav>
   );
