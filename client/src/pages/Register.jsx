@@ -13,18 +13,20 @@ const Register = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Validate input before submitting
   const handleSubmit = async e => {
     e.preventDefault();
     if (!form.username.trim() || !form.password.trim()) {
       setError('Username and password are required.');
       return;
     }
-    const ok = await register(form.username, form.password);
-    if (ok) navigate('/login');
-    else setError('Username already exists');
-  };
 
+    const ok = await register(form.username, form.password);
+    if (ok) {
+      navigate('/login');
+    } else {
+      setError('Username already exists');
+    }
+  };
 
   return (
     <AuthLayout
@@ -37,9 +39,27 @@ const Register = () => {
       }
     >
       <form onSubmit={handleSubmit} className="auth-form">
-        <input name="username" type="email" placeholder="Email" value={form.username} onChange={handleChange} required className="auth-input" />
-        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required className="auth-input" />
-        <button type="submit" disabled={loading} className="auth-btn">{loading ? 'Registering...' : 'Sign Up'}</button>
+        <input
+          name="username"
+          type="email"
+          placeholder="Email"
+          value={form.username}
+          onChange={handleChange}
+          required
+          className="auth-input"
+        />
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          required
+          className="auth-input"
+        />
+        <button type="submit" disabled={loading} className="auth-btn">
+          {loading ? 'Registering...' : 'Sign Up'}
+        </button>
         {error && <div className="form-error">{error}</div>}
       </form>
     </AuthLayout>

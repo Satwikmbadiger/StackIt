@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './NotificationBell.css';
 
 const NotificationBell = ({ notifications, onMarkAllRead }) => {
@@ -12,9 +12,14 @@ const NotificationBell = ({ notifications, onMarkAllRead }) => {
         setOpen(false);
       }
     }
-    if (open) document.addEventListener('mousedown', handleClickOutside);
-    else document.removeEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [open]);
 
   return (
@@ -32,18 +37,22 @@ const NotificationBell = ({ notifications, onMarkAllRead }) => {
           <div className="dropdown-header">
             Notifications
             {unreadCount > 0 && (
-              <button className="mark-all-btn" onClick={onMarkAllRead}>Mark all read</button>
+              <button className="mark-all-btn" onClick={onMarkAllRead}>
+                Mark all read
+              </button>
             )}
           </div>
           <ul>
             {notifications.length === 0 ? (
               <li className="empty">No notifications</li>
-            ) : notifications.map((n, i) => (
-              <li key={i} className={n.read ? '' : 'unread'}>
-                {n.message}
-                <span className="time">{n.time}</span>
-              </li>
-            ))}
+            ) : (
+              notifications.map((n, i) => (
+                <li key={i} className={n.read ? '' : 'unread'}>
+                  {n.message}
+                  <span className="time">{n.time}</span>
+                </li>
+              ))
+            )}
           </ul>
         </div>
       )}

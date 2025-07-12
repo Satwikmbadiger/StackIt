@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../AppContext';
-import { Link } from 'react-router-dom';
-import QuestionCard from '../components/QuestionCard';
+import { Link, useNavigate } from 'react-router-dom';
+import VoteButtons from '../components/VoteButtons';
 import Sidebar from '../components/Sidebar';
 import Breadcrumbs from '../components/Breadcrumbs';
 import RightPanel from '../components/RightPanel';
@@ -10,13 +10,15 @@ import './QuestionList.css';
 const QuestionList = () => {
   const { questions, loading, refreshQuestions, currentUser } = useAppContext();
   const [search, setSearch] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     refreshQuestions();
   }, []);
 
-  // Filter logic (simple search by title)
-  const filtered = questions.filter(q => q.title.toLowerCase().includes(search.toLowerCase()));
+  const filtered = questions.filter(q =>
+    q.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="qlayout-root">
@@ -24,14 +26,16 @@ const QuestionList = () => {
       <main className="qlayout-main">
         <div className="qlist-header-row">
           <div className="qlist-logo">StackIt</div>
-          <Link to="/ask" className="qlist-ask-btn">Ask New question</Link>
+          {currentUser && (
+            <button onClick={() => navigate('/ask')} className="qlist-ask-btn">Ask Question</button>
+          )}
           <button className="qlist-filter-btn">Newest</button>
           <button className="qlist-filter-btn">Unanswered</button>
           <button className="qlist-filter-btn">More ▾</button>
           <input
             className="qlist-search"
             type="text"
-            placeholder="Search..."
+            placeholder="Search questions..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -43,21 +47,58 @@ const QuestionList = () => {
             <Link to="/login" className="qlist-login-btn">Login</Link>
           )}
         </div>
+
         <Breadcrumbs />
+
         <div className="qlist-feed">
           {loading ? (
-            <div className="qlist-loading">Loading...</div>
+            <div className="qlist-loading">Loading questions...</div>
           ) : filtered.length === 0 ? (
             <div className="qlist-empty">No questions found.</div>
           ) : (
-            filtered.map(q => (
-              <QuestionCard key={q.id} question={q} />
+            filtered.map(question => (
+              <div key={question.id} className="question-summary">
+                <div className="question-votes">
+                  <VoteButtons
+                    type="questions"
+                    id={question.id}
+                    votes={question.votes || 0}
+                    userVote={question.userVote || 0}
+                  />
+                </div>
+
+                <div className="question-main">
+                  <Link to={`/questions/${question.id}`} className="question-title">
+                    {question.title}
+                  </Link>
+
+                  <div
+                    className="question-description"
+                    dangerouslySetInnerHTML={{ __html: question.description }}
+                  />
+
+                  <div className="question-meta">
+                    <span>By {question.author}</span>
+                    <span>•</span>
+                    <span>{new Date(question.created_at).toLocaleDateString()}</span>
+                    <span>•</span>
+                    <span>{question.answers?.length || 0} answers</span>
+                  </div>
+
+                  <div className="question-tags">
+                    {question.tags.map((tag, idx) => (
+                      <span key={idx} className="tag">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
             ))
           )}
         </div>
+
         <div className="qlist-pagination">
           <span className="qlist-page-arrow">&lt;</span>
-          {[1,2,3,4,5,6,7].map(num => (
+          {[1, 2, 3, 4, 5].map(num => (
             <span key={num} className="qlist-page-num">{num}</span>
           ))}
           <span className="qlist-page-arrow">&gt;</span>
