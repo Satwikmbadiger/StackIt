@@ -26,18 +26,22 @@ const Register = () => {
 
 
   return (
-    <div className="auth-page">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit} className="auth-form">
-        <input name="username" placeholder="Username" value={form.username} onChange={handleChange} required />
+    <AuthLayout
+      title="Create Account"
+      subtitle="Sign up to join the StackIt community"
+      illustrationAlt="Register Illustration"
+      illustrationSrc="https://undraw.co/api/illustrations/7b7a3b4b-7c3b-4d5e-b1e2-4b7c4e4b4e4b"
+      belowForm={
+        <>Already have an account? <a href="/login" className="auth-link">Sign In</a></>
+      }
+    >
+      <form onSubmit={handleSubmit}>
+        <input name="username" type="email" placeholder="Email" value={form.username} onChange={handleChange} required />
         <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
-        <button type="submit" disabled={loading}>{loading ? 'Registering...' : 'Register'}</button>
+        <button type="submit" disabled={loading}>{loading ? 'Registering...' : 'Sign Up'}</button>
         {error && <div className="form-error">{error}</div>}
-        <div className="auth-link-row">
-          Already have an account? <a href="/login" className="auth-link">Login</a>
-        </div>
       </form>
-    </div>
+    </AuthLayout>
   );
 };
 

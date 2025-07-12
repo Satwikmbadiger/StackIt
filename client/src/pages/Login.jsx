@@ -31,18 +31,26 @@ const Login = () => {
 
 
   return (
-    <div className="auth-page">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit} className="auth-form">
-        <input name="username" placeholder="Username" value={form.username} onChange={handleChange} required />
+    <AuthLayout
+      title="Welcome Back"
+      subtitle="Sign in to your account to continue"
+      illustrationAlt="Login Illustration"
+      illustrationSrc="https://undraw.co/api/illustrations/7b7a3b4b-7c3b-4d5e-b1e2-4b7c4e4b4e4b"
+      belowForm={
+        <>Don't have an account? <a href="/register" className="auth-link">Sign Up</a></>
+      }
+    >
+      <form onSubmit={handleSubmit}>
+        <input name="username" type="email" placeholder="Email" value={form.username} onChange={handleChange} required />
         <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
-        <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
-        {error && <div className="form-error">{error}</div>}
-        <div className="auth-link-row">
-          Don't have an account? <a href="/register" className="auth-link">Register</a>
+        <div className="auth-row">
+          <label className="remember-me"><input type="checkbox" /> Remember me</label>
+          <a href="#" className="forgot-link">Forgot Password?</a>
         </div>
+        <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Sign In'}</button>
+        {error && <div className="form-error">{error}</div>}
       </form>
-    </div>
+    </AuthLayout>
   );
 };
 
