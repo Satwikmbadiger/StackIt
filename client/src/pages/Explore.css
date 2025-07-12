@@ -6,32 +6,109 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2.2rem 0 2rem 0;
+  padding: 2.2rem 1rem 2rem 1rem;
 }
+
+.explore-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.explore-header h2 {
+  color: var(--accent-cyan);
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.explore-header p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
 .explore-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 1.1rem;
-  margin: 1.2rem 0 1.1rem 0;
+  margin: 1.2rem 0 2rem 0;
   justify-content: center;
+  max-width: 800px;
 }
+
 .explore-tag {
   background: var(--bg-card);
   color: var(--accent-cyan);
   border: 2px solid var(--accent-cyan);
   border-radius: 1.2rem;
-  padding: 0.5rem 1.5rem;
+  padding: 0.7rem 1.5rem;
   font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
 }
-.explore-tag:hover {
+
+.explore-tag.clickable:hover {
   background: var(--accent-cyan);
-  color: #1A1D29;
+  color: var(--bg-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
 }
-.explore-info {
-  color: var(--text-muted);
-  margin-top: 1.1rem;
-  font-size: 1.03rem;
+
+.tag-count {
+  background: rgba(0, 255, 255, 0.2);
+  color: var(--accent-cyan);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.explore-tag.clickable:hover .tag-count {
+  background: rgba(26, 29, 41, 0.3);
+  color: var(--bg-dark);
+}
+
+.explore-actions {
+  margin-top: 2rem;
+}
+
+.back-to-questions {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.8rem 1.5rem;
+  border: 2px solid var(--accent-cyan);
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+}
+
+.back-to-questions:hover {
+  background: var(--accent-cyan);
+  color: var(--bg-dark);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .explore-page {
+    padding: 1.5rem 0.5rem;
+  }
+  
+  .explore-header h2 {
+    font-size: 1.6rem;
+  }
+  
+  .explore-tags {
+    gap: 0.8rem;
+    max-width: 100%;
+  }
+  
+  .explore-tag {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+  }
 }
