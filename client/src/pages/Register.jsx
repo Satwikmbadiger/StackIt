@@ -1,0 +1,48 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../AppContext';
+
+const Register = () => {
+  const { register, loading } = useAppContext();
+  const [form, setForm] = useState({ username: '', password: '' });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleChange = e => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // Validate input before submitting
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (!form.username.trim() || !form.password.trim()) {
+      setError('Username and password are required.');
+      return;
+    }
+    const ok = await register(form.username, form.password);
+    if (ok) navigate('/login');
+    else setError('Username already exists');
+  };
+
+
+  return (
+    <AuthLayout
+      title="Create Account"
+      subtitle="Sign up to join the StackIt community"
+      illustrationAlt="Register Illustration"
+      illustrationSrc="https://undraw.co/api/illustrations/7b7a3b4b-7c3b-4d5e-b1e2-4b7c4e4b4e4b"
+      belowForm={
+        <>Already have an account? <a href="/login" className="auth-link">Sign In</a></>
+      }
+    >
+      <form onSubmit={handleSubmit}>
+        <input name="username" type="email" placeholder="Email" value={form.username} onChange={handleChange} required />
+        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
+        <button type="submit" disabled={loading}>{loading ? 'Registering...' : 'Sign Up'}</button>
+        {error && <div className="form-error">{error}</div>}
+      </form>
+    </AuthLayout>
+  );
+};
+
+export default Register;

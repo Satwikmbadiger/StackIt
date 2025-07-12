@@ -1,0 +1,191 @@
+.qlayout-root {
+  width: 100vw;
+  min-height: 100vh;
+  background: var(--bg-dark);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.qlayout-main {
+  flex: 1 1 600px;
+  min-width: 0;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-top: 1.2rem;
+}
+
+/* Keep previous question card/feed styles below */
+
+.qlist-header-row {
+  width: 90%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  background: var(--bg-card);
+  border-radius: 1.2rem 1.2rem 0 0;
+  border: 2px solid #fff;
+  border-bottom: none;
+  padding: 1.3rem 1.2rem 1rem 1.2rem;
+  margin-bottom: 0.4rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.qlist-logo {
+  color: var(--accent-cyan);
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-right: 1.1rem;
+}
+.qlist-ask-btn {
+  background: transparent;
+  color: var(--accent-cyan);
+  border: 2px solid var(--accent-cyan);
+  border-radius: 1rem;
+  padding: 0.6rem 1.3rem;
+  font-size: 1.06rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 1.2rem;
+  transition: background 0.18s, color 0.18s;
+  text-decoration: none;
+}
+.qlist-ask-btn:hover {
+  background: var(--accent-cyan);
+  color: #fff;
+}
+.qlist-filter-btn {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 1rem;
+  padding: 0.5rem 1.1rem;
+  font-size: 1.04rem;
+  margin-right: 0.7rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.qlist-filter-btn:hover {
+  background: var(--accent-purple);
+  color: #fff;
+  border-color: var(--accent-purple);
+}
+.qlist-search {
+  background: var(--bg-dark);
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 1rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1.04rem;
+  margin-left: auto;
+  margin-right: 1rem;
+  width: 200px;
+  transition: border 0.18s;
+}
+.qlist-search:focus {
+  border: 2px solid var(--accent-cyan);
+}
+.qlist-login-btn {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 1rem;
+  padding: 0.5rem 1.1rem;
+  font-size: 1.04rem;
+  cursor: pointer;
+  text-decoration: none;
+  margin-left: 0.5rem;
+}
+.qlist-login-btn:hover {
+  background: var(--accent-cyan);
+  color: #fff;
+  border-color: var(--accent-cyan);
+}
+.qlist-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.12rem;
+  border: 2px solid #fff;
+}
+.qlist-feed {
+  width: 90%;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+.qlist-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+.qlist-page-arrow {
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.18rem 0.7rem;
+  border-radius: 0.8rem;
+  border: 2px solid #fff;
+  background: transparent;
+  transition: background 0.13s, color 0.13s;
+}
+.qlist-page-arrow:hover {
+  background: var(--accent-cyan);
+  color: #fff;
+  border-color: var(--accent-cyan);
+}
+.qlist-page-num {
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 0.18rem 0.7rem;
+  border-radius: 0.8rem;
+  border: 2px solid #fff;
+  background: transparent;
+  margin: 0 0.1rem;
+  cursor: pointer;
+  transition: background 0.13s, color 0.13s;
+}
+.qlist-page-num:hover {
+  background: var(--accent-purple);
+  color: #fff;
+  border-color: var(--accent-purple);
+}
+.qlist-loading {
+  color: #fff;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+@media (max-width: 700px) {
+  .qlist-header-row, .qlist-feed {
+    width: 99vw;
+    max-width: 99vw;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+  }
+  .qlist-header-row {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.7rem 0.3rem 0.7rem 0.3rem;
+  }
+  .qlist-search {
+    width: 100px;
+    margin-right: 0.3rem;
+  }
+}
