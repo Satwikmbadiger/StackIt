@@ -1,17 +1,17 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from dotenv import load_dotenv
 import os
 from datetime import timedelta
+from config import config
+import traceback
 
-# Load .env
-load_dotenv()
-
+# Get configuration
+config_name = os.getenv('FLASK_ENV', 'development')
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///stackit.db")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "your-secret-key")
+app.config.from_object(config[config_name])
+
+# Set JWT expiration
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
 
 # Initialize extensions
@@ -22,7 +22,32 @@ db.init_app(app)
 jwt = JWTManager(app)
 
 # Enable CORS
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app)  # Allow all origins for debugging
+
+# Add JWT error handlers for better debugging
+@jwt.unauthorized_loader
+def custom_unauthorized_response(callback):
+    from flask import request
+    print("[JWT ERROR] Missing or invalid Authorization header")
+    print(f"Request path: {request.path}")
+    print(f"Request headers: {dict(request.headers)}")
+    return jsonify({"error": "Missing or invalid Authorization header"}), 401
+
+@jwt.invalid_token_loader
+def custom_invalid_token_response(callback):
+    from flask import request
+    print("[JWT ERROR] Invalid JWT token")
+    print(f"Request path: {request.path}")
+    print(f"Request headers: {dict(request.headers)}")
+    return jsonify({"error": "Invalid JWT token"}), 401
+
+@jwt.expired_token_loader
+def custom_expired_token_response(jwt_header, jwt_payload):
+    from flask import request
+    print("[JWT ERROR] Expired JWT token")
+    print(f"Request path: {request.path}")
+    print(f"Request headers: {dict(request.headers)}")
+    return jsonify({"error": "Expired JWT token"}), 401
 
 # Import models after db and app are set up
 from models import *
@@ -48,6 +73,20 @@ def home():
 def health_check():
     return jsonify({"status": "healthy", "message": "StackIt API is running!"})
 
+@app.route("/api/debug_post", methods=["POST"])
+def debug_post():
+    from flask import request
+    print("[DEBUG] /api/debug_post called")
+    print(f"Headers: {dict(request.headers)}")
+    print(f"Data: {request.data}")
+    try:
+        json_data = request.get_json(force=True)
+        print(f"JSON: {json_data}")
+        return jsonify({"received": json_data}), 200
+    except Exception as e:
+        print(f"JSON decode error: {e}")
+        return jsonify({"error": str(e)}), 400
+
 # Error handlers
 @app.errorhandler(404)
 def not_found(error):
@@ -59,7 +98,24 @@ def internal_error(error):
 
 @app.errorhandler(422)
 def unprocessable_entity(error):
-    return jsonify({"error": "Unprocessable entity"}), 422
+    from flask import request
+    print("[ERROR] 422 Unprocessable Entity")
+    print(f"Request data: {request.data}")
+    print(f"Request headers: {dict(request.headers)}")
+    print(f"Error: {error}")
+    return jsonify({"error": "Unprocessable entity", "details": str(error)}), 422
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    from flask import request
+    print("[ERROR] Unhandled Exception")
+    print(f"Request path: {request.path}")
+    print(f"Request method: {request.method}")
+    print(f"Request data: {request.data}")
+    print(f"Request headers: {dict(request.headers)}")
+    print(f"Exception: {e}")
+    traceback.print_exc()
+    return jsonify({"error": "Internal server error", "details": str(e)}), 500
 
 if __name__ == "__main__":
     with app.app_context():

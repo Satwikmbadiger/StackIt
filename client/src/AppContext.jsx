@@ -27,6 +27,7 @@ export const AppProvider = ({ children }) => {
             api.removeToken(); // Remove invalid token
           }
         } catch (error) {
+          console.error('Auth check failed:', error);
           api.removeToken(); // Remove invalid token
         }
       }
@@ -107,10 +108,16 @@ export const AppProvider = ({ children }) => {
 
   const postQuestion = async (data) => {
     setLoading(true);
-    const q = await api.postQuestion(data);
-    await refreshQuestions();
-    setLoading(false);
-    return q;
+    try {
+      const response = await api.postQuestion(data);
+      await refreshQuestions();
+      setLoading(false);
+      return response;
+    } catch (error) {
+      setLoading(false);
+      console.error('Failed to post question:', error);
+      throw error;
+    }
   };
 
   // Answers

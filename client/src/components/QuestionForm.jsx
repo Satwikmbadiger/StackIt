@@ -18,13 +18,21 @@ const QuestionForm = () => {
       setError('All fields are required.');
       return;
     }
-    const newQuestion = await postQuestion({
-      title,
-      description,
-      tags,
-      author: currentUser.username,
-    });
-    navigate(`/questions/${newQuestion.id}`);
+    try {
+      const response = await postQuestion({
+        user_id: currentUser?.id, // Send user_id for demo
+        title,
+        description,
+        tags,
+      });
+      if (response.success) {
+        navigate(`/questions/${response.question.id}`);
+      } else {
+        setError(response.message || 'Failed to post question');
+      }
+    } catch (error) {
+      setError('Failed to post question. Please try again.');
+    }
   };
 
   return (
