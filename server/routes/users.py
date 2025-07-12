@@ -77,6 +77,11 @@ def login():
 def get_current_user():
     try:
         user_id = get_jwt_identity()
+        print(f"JWT Identity: {user_id}")  # Debug log
+        
+        if not user_id:
+            return jsonify({"success": False, "message": "Invalid token - no user ID"}), 401
+        
         user = User.query.get(user_id)
         
         if not user:
@@ -88,7 +93,8 @@ def get_current_user():
         }), 200
         
     except Exception as e:
-        return jsonify({"success": False, "message": "Failed to get user info"}), 500
+        print(f"Error in get_current_user: {str(e)}")  # Debug log
+        return jsonify({"success": False, "message": f"Failed to get user info: {str(e)}"}), 500
 
 @users.route('/auth/logout', methods=['POST'])
 @jwt_required()

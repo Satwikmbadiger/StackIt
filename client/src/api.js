@@ -18,6 +18,12 @@ const handleResponse = async (response) => {
   return response.json();
 };
 
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
+
 export const api = {
   // Auth endpoints
   async login(username, password) {
@@ -40,19 +46,26 @@ export const api = {
 
   // Questions endpoints
   async getQuestions() {
-    const response = await fetch(`${API_BASE}/questions`);
+    const response = await fetch(`${API_BASE}/questions`, {
+      headers: getAuthHeaders(),
+    });
     return handleResponse(response);
   },
 
   async getQuestion(id) {
-    const response = await fetch(`${API_BASE}/questions/${id}`);
+    const response = await fetch(`${API_BASE}/questions/${id}`, {
+      headers: getAuthHeaders(),
+    });
     return handleResponse(response);
   },
 
   async postQuestion(data) {
     const response = await fetch(`${API_BASE}/questions`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
       body: JSON.stringify(data),
     });
     return handleResponse(response);
@@ -62,7 +75,10 @@ export const api = {
   async postAnswer(data) {
     const response = await fetch(`${API_BASE}/answers`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
       body: JSON.stringify(data),
     });
     return handleResponse(response);
@@ -72,7 +88,10 @@ export const api = {
   async vote(data) {
     const response = await fetch(`${API_BASE}/votes`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
       body: JSON.stringify(data),
     });
     return handleResponse(response);
@@ -82,7 +101,10 @@ export const api = {
   async acceptAnswer(data) {
     const response = await fetch(`${API_BASE}/answers/accept`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
       body: JSON.stringify(data),
     });
     return handleResponse(response);
@@ -90,32 +112,31 @@ export const api = {
 
   // Notifications endpoints
   async getNotifications() {
-    const response = await fetch(`${API_BASE}/notifications`);
+    const response = await fetch(`${API_BASE}/notifications`, {
+      headers: getAuthHeaders(),
+    });
     return handleResponse(response);
   },
 
   async markNotificationsRead() {
     const response = await fetch(`${API_BASE}/notifications/mark-read`, {
       method: 'POST',
+      headers: getAuthHeaders(),
     });
     return handleResponse(response);
   },
 
   // Get current user
   async getCurrentUser() {
-    const response = await fetch(`${API_BASE}/auth/me`);
+    const response = await fetch(`${API_BASE}/auth/me`, {
+      headers: getAuthHeaders(),
+    });
     return handleResponse(response);
   },
 
   // Utility function to check if user is authenticated
   isAuthenticated() {
     return localStorage.getItem('token') !== null;
-  },
-
-  // Add auth token to requests
-  getAuthHeaders() {
-    const token = localStorage.getItem('token');
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
   },
 
   // Store token after login
@@ -132,16 +153,4 @@ export const api = {
   hasToken() {
     return !!localStorage.getItem('token');
   },
-};
-
-// Add auth headers to all requests
-const originalFetch = window.fetch;
-window.fetch = function(url, options = {}) {
-  if (url.startsWith(API_BASE)) {
-    options.headers = {
-      ...options.headers,
-      ...api.getAuthHeaders(),
-    };
-  }
-  return originalFetch(url, options);
 };
