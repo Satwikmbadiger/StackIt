@@ -1,6 +1,4 @@
 // api.js - All backend API calls for Flask integration
-// For now, these are mock implementations. Replace fetch URLs with Flask endpoints.
-
 const API_BASE = 'http://localhost:5000/api';
 
 class ApiError extends Error {
@@ -16,12 +14,6 @@ const handleResponse = async (response) => {
     throw new ApiError(error.message || 'API request failed', response.status);
   }
   return response.json();
-};
-
-// Helper function to get auth headers
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  return token ? { 'Authorization': `Bearer ${token}` } : {};
 };
 
 export const api = {
@@ -44,12 +36,20 @@ export const api = {
     return handleResponse(response);
   },
 
-  // Questions endpoints
+  async getCurrentUser() {
+    const response = await fetch(`${API_BASE}/auth/me`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    return handleResponse(response);
+  },
+
+  // Questions
   async getQuestions() {
     const response = await fetch(`${API_BASE}/questions`, {
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       }
     });
     return handleResponse(response);
@@ -59,7 +59,6 @@ export const api = {
     const response = await fetch(`${API_BASE}/questions/${id}`, {
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       }
     });
     return handleResponse(response);
@@ -70,58 +69,52 @@ export const api = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       },
       body: JSON.stringify(data),
     });
     return handleResponse(response);
   },
 
-  // Answers endpoints
+  // Answers
   async postAnswer(data) {
     const response = await fetch(`${API_BASE}/answers`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       },
       body: JSON.stringify(data),
     });
     return handleResponse(response);
   },
 
-  // Voting endpoints
-  async vote(data) {
-    const response = await fetch(`${API_BASE}/votes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeaders()
-      },
-      body: JSON.stringify(data),
-    });
-    return handleResponse(response);
-  },
-
-  // Accept answer endpoint
   async acceptAnswer(data) {
     const response = await fetch(`${API_BASE}/answers/accept`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       },
       body: JSON.stringify(data),
     });
     return handleResponse(response);
   },
 
-  // Notifications endpoints
+  // Voting
+  async vote(data) {
+    const response = await fetch(`${API_BASE}/votes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    return handleResponse(response);
+  },
+
+  // Notifications
   async getNotifications() {
     const response = await fetch(`${API_BASE}/notifications`, {
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       }
     });
     return handleResponse(response);
@@ -132,45 +125,24 @@ export const api = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...getAuthHeaders()
       }
     });
     return handleResponse(response);
   },
 
-  // Get current user
-  async getCurrentUser() {
-    const response = await fetch(`${API_BASE}/auth/me`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeaders()
-      }
-    });
-    return handleResponse(response);
-  },
-
-  // Utility function to check if user is authenticated
+  // Token management
   isAuthenticated() {
     return localStorage.getItem('token') !== null;
   },
 
-  // Add auth token to requests
-  getAuthHeaders() {
-    const token = localStorage.getItem('token');
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
-  },
-
-  // Store token after login
   setToken(token) {
     localStorage.setItem('token', token);
   },
 
-  // Remove token on logout
   removeToken() {
     localStorage.removeItem('token');
   },
 
-  // Check if token exists
   hasToken() {
     return !!localStorage.getItem('token');
   },

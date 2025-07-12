@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAppContext } from '../AppContext';
 import './VoteButtons.css';
@@ -50,5 +51,6 @@ const VoteButtons = ({ type, id, votes = 0, userVote = 0 }) => {
     </div>
   );
 };
+
 
 export default VoteButtons;

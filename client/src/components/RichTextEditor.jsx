@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import './RichTextEditor.css';
 
@@ -14,6 +15,19 @@ const RichTextEditor = ({ value, onChange, placeholder = "Write your content her
     document.execCommand(command, false, value);
     editorRef.current.focus();
     onChange(editorRef.current.innerHTML);
+  };
+
+  // Handle keyboard shortcuts for undo/redo
+  const handleKeyDown = (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+      e.preventDefault();
+      document.execCommand('undo');
+      onChange(editorRef.current.innerHTML);
+    } else if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) {
+      e.preventDefault();
+      document.execCommand('redo');
+      onChange(editorRef.current.innerHTML);
+    }
   };
 
   const insertEmoji = (emoji) => {
@@ -60,6 +74,12 @@ const RichTextEditor = ({ value, onChange, placeholder = "Write your content her
     document.execCommand('insertText', false, text);
     onChange(editorRef.current.innerHTML);
   };
+
+  React.useEffect(() => {
+    if (editorRef.current && value && editorRef.current.innerHTML !== value) {
+      editorRef.current.innerHTML = value;
+    }
+  }, [value]);
 
   return (
     <div className="rich-text-editor">
@@ -159,11 +179,14 @@ const RichTextEditor = ({ value, onChange, placeholder = "Write your content her
         ref={editorRef}
         className="editor-content"
         contentEditable
-        dangerouslySetInnerHTML={{ __html: value }}
-        onInput={(e) => onChange(e.target.innerHTML)}
+        dir="ltr"
+        onInput={null}
+        onBlur={(e) => onChange(e.target.innerHTML)}
         onPaste={handlePaste}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         suppressContentEditableWarning
+
       />
     </div>
   );

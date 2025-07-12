@@ -1,0 +1,43 @@
+.activity-page {
+  width: 100%;
+  min-height: 80vh;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.2rem 0 2rem 0;
+}
+.activity-section {
+  background: var(--bg-card);
+  border-radius: 1.2rem;
+  border: 2px solid #fff;
+  padding: 1.3rem 1.3rem 1.2rem 1.3rem;
+  margin-bottom: 1.6rem;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.10);
+}
+.activity-section h3 {
+  color: var(--accent-purple);
+  margin-bottom: 1rem;
+}
+.activity-empty {
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 0.8rem;
+}
+.activity-item {
+  color: var(--accent-cyan);
+  font-size: 1.05rem;
+  margin-bottom: 0.7rem;
+}
+.activity-error {
+  color: #fff;
+  background: var(--accent-purple);
+  border-radius: 1rem;
+  padding: 1.1rem;
+  margin: 2rem auto;
+  text-align: center;
+  max-width: 400px;
+}

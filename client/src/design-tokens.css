@@ -1,5 +1,7 @@
 :root {
-  /* Primary Colors */
+  /* === Colors === */
+
+  /* Primary Shades */
   --color-primary-50: #F0F4FF;
   --color-primary-100: #E0E7FF;
   --color-primary-200: #C7D2FE;
@@ -11,58 +13,63 @@
   --color-primary-800: #3730A3;
   --color-primary-900: #312E81;
 
-  /* Secondary Colors */
-  --color-secondary-50: #F8FAFC;
-  --color-secondary-100: #F1F5F9;
-  --color-secondary-200: #E2E8F0;
-  --color-secondary-300: #CBD5E1;
-  --color-secondary-400: #94A3B8;
-  --color-secondary-500: #64748B;
-  --color-secondary-600: #475569;
-  --color-secondary-700: #334155;
-  --color-secondary-800: #1E293B;
-  --color-secondary-900: #0F172A;
-
   /* Accent Colors */
+  --accent-cyan: #00D4AA;
+  --accent-cyan-hover: #00B894;
+  --accent-purple: #6C5CE7;
+  --accent-purple-hover: #5F3DC4;
   --color-accent-coral-500: #FF6B6B;
   --color-accent-orange-500: #F97316;
   --color-accent-yellow-500: #EAB308;
   --color-accent-green-500: #22C55E;
   --color-accent-purple-500: #A855F7;
 
-  /* Neutral Colors */
+  /* Semantic Colors */
+  --success: #27AE60;
+  --warning: #F39C12;
+  --error: #E74C3C;
+  --info: #3498DB;
+
+  /* Neutrals */
   --color-white: #FFFFFF;
   --color-black: #000000;
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
-  --gradient-coral: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%);
-  --gradient-orange: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
-  --gradient-sunset: linear-gradient(135deg, #FF8A00 0%, #FF6B6B 50%, #6366F1 100%);
-  --gradient-mesh: linear-gradient(135deg, #6366F1 0%, #FF6B6B 33%, #F97316 66%, #EAB308 100%);
-  --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-
-  /* Typography */
+  /* === Typography === */
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Cal Sans', 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  --font-family-primary: var(--font-primary);
+  --font-family-code: var(--font-mono);
 
-  /* Font Sizes */
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
-  --font-size-4xl: 2.25rem;
-  --font-size-5xl: 3rem;
-  --font-size-6xl: 3.75rem;
-  --font-size-7xl: 4.5rem;
-  --font-size-8xl: 6rem;
-  --font-size-9xl: 8rem;
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-base: 1rem;
+  --font-lg: 1.125rem;
+  --font-xl: 1.25rem;
+  --font-2xl: 1.5rem;
+  --font-3xl: 1.875rem;
+  --font-4xl: 2.25rem;
+  --font-5xl: 3rem;
+  --font-6xl: 3.75rem;
+  --font-7xl: 4.5rem;
+  --font-8xl: 6rem;
+  --font-9xl: 8rem;
 
-  /* Border Radius */
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* === Spacing === */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* === Border Radius === */
   --radius-none: 0px;
   --radius-sm: 0.125rem;
   --radius-default: 0.25rem;
@@ -73,7 +80,7 @@
   --radius-3xl: 1.5rem;
   --radius-full: 9999px;
 
-  /* Shadows */
+  /* === Shadows === */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-default: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -86,7 +93,15 @@
   --shadow-orange: 0 10px 25px -5px rgb(249 115 22 / 0.4);
   --shadow-glow: 0 0 20px rgb(99 102 241 / 0.3);
 
-  /* Theme: Light */
+  /* === Gradients === */
+  --gradient-primary: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+  --gradient-coral: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%);
+  --gradient-orange: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  --gradient-sunset: linear-gradient(135deg, #FF8A00 0%, #FF6B6B 50%, #6366F1 100%);
+  --gradient-mesh: linear-gradient(135deg, #6366F1 0%, #FF6B6B 33%, #F97316 66%, #EAB308 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+
+  /* === Light Theme === */
   --theme-light-background: #FFFFFF;
   --theme-light-surface: #F8FAFC;
   --theme-light-text-primary: #1E293B;
@@ -94,8 +109,11 @@
   --theme-light-text-muted: #94A3B8;
   --theme-light-border: #E2E8F0;
 
-  /* Theme: Dark */
-  --theme-dark-background: #1E293B;
+  /* === Dark Theme === */
+  --bg-dark: #1A1D29;
+  --bg-card: #252A3A;
+  --bg-sidebar: #1E2333;
+  --theme-dark-background: var(--bg-dark);
   --theme-dark-surface: #111827;
   --theme-dark-text-primary: #F8FAFC;
   --theme-dark-text-secondary: #D1D5DB;

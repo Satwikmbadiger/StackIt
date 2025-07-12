@@ -6,45 +6,42 @@ export const useAppContext = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  // Notifications are stored per user for demo
   const [notifications, setNotifications] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState({ message: '', type: '' });
 
-  // Check authentication status and fetch questions on mount
   useEffect(() => {
     (async () => {
       setLoading(true);
-      
-      // Check if user is authenticated
+
+      // Auth check
       if (api.hasToken()) {
         try {
           const userRes = await api.getCurrentUser();
           if (userRes.success) {
             setCurrentUser({ ...userRes.user, notifications: [], onMarkAllRead: markAllRead });
           } else {
-            api.removeToken(); // Remove invalid token
+            api.removeToken();
           }
         } catch (error) {
           console.error('Auth check failed:', error);
-          api.removeToken(); // Remove invalid token
+          api.removeToken();
         }
       }
-      
-      // Fetch questions
+
+      // Load questions
       try {
         const qs = await api.getQuestions();
         setQuestions(qs);
       } catch (error) {
         console.error('Failed to fetch questions:', error);
       }
-      
+
       setLoading(false);
     })();
   }, []);
 
-  // Auth
   const login = async (username, password) => {
     setLoading(true);
     try {
@@ -87,18 +84,17 @@ export const AppProvider = ({ children }) => {
     setNotification({ message: 'Logged out.', type: 'info' });
   };
 
-  // Notifications
   const addNotification = (message) => {
     const newNotif = { message, read: false, time: new Date().toLocaleTimeString() };
     setNotifications(prev => [newNotif, ...prev].slice(0, 10));
     if (currentUser) setCurrentUser(u => ({ ...u, notifications: [newNotif, ...(u.notifications || [])].slice(0, 10) }));
   };
+
   const markAllRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     if (currentUser) setCurrentUser(u => ({ ...u, notifications: (u.notifications || []).map(n => ({ ...n, read: true })) }));
   };
 
-  // Questions
   const refreshQuestions = async () => {
     setLoading(true);
     const qs = await api.getQuestions();
@@ -120,7 +116,6 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // Answers
   const postAnswer = async (questionId, data) => {
     setLoading(true);
     const a = await api.postAnswer({ questionId, ...data });
@@ -129,15 +124,27 @@ export const AppProvider = ({ children }) => {
     return a;
   };
 
-  // Voting
   const vote = async (type, id, delta) => {
-    setLoading(true);
-    await api.vote({ type, id, delta });
-    await refreshQuestions();
-    setLoading(false);
+    setQuestions(prev => prev.map(q => {
+      if (type === 'questions' && q.id === id) {
+        return {
+          ...q,
+          votes: (q.votes || 0) + delta,
+          userVote: delta
+        };
+      }
+      return q;
+    }));
+
+    try {
+      await api.vote({ type, id, delta, user_id: currentUser?.id });
+    } catch {
+      console.error("Vote failed, refreshing...");
+    } finally {
+      await refreshQuestions();
+    }
   };
 
-  // Accept answer
   const acceptAnswer = async (answerId) => {
     setLoading(true);
     await api.acceptAnswer({ answerId });

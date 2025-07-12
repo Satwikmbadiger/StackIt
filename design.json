@@ -1,4 +1,5 @@
 {
+
   "designSystem": {
     "name": "Modern UI Design System",
     "version": "1.0.0",
@@ -815,3 +816,4 @@
       "border": "#374151"
     }
   }
+
