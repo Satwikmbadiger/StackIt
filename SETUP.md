@@ -1,158 +1,130 @@
-# StackIt Setup Guide
+# StackIt - Setup Guide
 
-This guide will help you set up StackIt with your PostgreSQL database on Railway.
+This document provides detailed instructions for setting up the StackIt Q&A Forum Platform.
 
-## Prerequisites
+## Database Setup
 
-- Python 3.8+
-- Node.js 16+
-- PostgreSQL database (Railway)
+### PostgreSQL Installation
 
-## Backend Setup
+1. Download and install PostgreSQL from [postgresql.org](https://www.postgresql.org/download/)
 
-### 1. Install Dependencies
+2. Create a new database:
+   ```sql
+   CREATE DATABASE stackit;
+   CREATE USER stackit_user WITH PASSWORD 'your_password';
+   GRANT ALL PRIVILEGES ON DATABASE stackit TO stackit_user;
+   ```
 
-```bash
-cd server
-pip install -r requirements.txt
+### Database Schema
+
+The application uses the following tables:
+
+- **users**: User accounts and authentication
+- **questions**: Questions posted by users
+- **answers**: Answers to questions
+- **votes**: Upvotes/downvotes on answers
+- **tags**: Question categorization tags
+- **notifications**: User notifications
+
+## Environment Variables
+
+Create a `.env` file in the backend directory with the following variables:
+
 ```
-
-### 2. Configure Environment Variables
-
-Create a `.env` file in the `server` directory with your Railway PostgreSQL credentials:
-
-```env
-# Database Configuration (Replace with your Railway PostgreSQL URL)
-DATABASE_URL=postgresql://username:password@host:port/database_name
+# Database Configuration
+DATABASE_URL=postgresql://stackit_user:your_password@localhost/stackit
 
 # JWT Configuration
-JWT_SECRET_KEY=your-super-secret-jwt-key-change-this-in-production
+JWT_SECRET_KEY=your_secure_random_key
+JWT_ACCESS_TOKEN_EXPIRES=3600  # 1 hour
 
-# Flask Configuration
+# Application Configuration
+FLASK_APP=app.py
 FLASK_ENV=development
-FLASK_DEBUG=True
 ```
 
-**To get your Railway PostgreSQL URL:**
-1. Go to your Railway dashboard
-2. Select your PostgreSQL database
-3. Click on "Connect" tab
-4. Copy the "Postgres Connection URL"
-5. Replace `postgresql://` with `postgresql://` if needed
+## Frontend Configuration
 
-### 3. Initialize Database
+### Tailwind CSS Setup
 
-```bash
-cd server
-python setup_db.py
+The Tailwind CSS configuration is in `tailwind.config.js`. Update it to include your project paths:
+
+```javascript
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,jsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
 ```
 
-This will:
-- Create all database tables
-- Add default tags for questions
+### API Configuration
 
-### 4. Start the Backend Server
+Update the API base URL in `src/services/api.js` to point to your backend:
 
-```bash
-cd server
-python app.py
+```javascript
+const API_BASE_URL = 'http://localhost:5000/api';
 ```
 
-The server will run on `http://localhost:5000`
+## Development Workflow
 
-## Frontend Setup
+1. Start the backend server:
+   ```bash
+   cd backend
+   flask run
+   ```
 
-### 1. Install Dependencies
+2. Start the frontend development server:
+   ```bash
+   cd frontend
+   npm run dev
+   ```
 
-```bash
-cd client
-npm install
-```
+3. Access the application at `http://localhost:5173`
 
-### 2. Start the Frontend
+## Production Deployment
 
-```bash
-cd client
-npm start
-```
+### Backend Deployment
 
-The frontend will run on `http://localhost:3000`
+1. Install Gunicorn:
+   ```bash
+   pip install gunicorn
+   ```
 
-## Testing the Setup
+2. Start the production server:
+   ```bash
+   gunicorn -w 4 -b 0.0.0.0:5000 app:app
+   ```
 
-1. **Register a new user:**
-   - Go to `http://localhost:3000/register`
-   - Create a new account
+### Frontend Deployment
 
-2. **Login:**
-   - Go to `http://localhost:3000/login`
-   - Login with your credentials
+1. Build the production assets:
+   ```bash
+   cd frontend
+   npm run build
+   ```
 
-3. **Ask a question:**
-   - Click "Ask Question" button
-   - Fill in title, description, and select tags
-   - Submit the question
-
-## API Endpoints
-
-The backend provides the following main endpoints:
-
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user info
-- `GET /api/questions` - Get all questions
-- `POST /api/questions` - Create a new question
-- `GET /api/questions/<id>` - Get specific question
-- `POST /api/answers` - Post an answer
-- `POST /api/votes` - Vote on questions/answers
+2. Serve the static files from the `dist` directory using a web server like Nginx or Apache.
 
 ## Troubleshooting
 
 ### Database Connection Issues
 
-1. **Check your DATABASE_URL format:**
-   ```
-   postgresql://username:password@host:port/database_name
-   ```
+- Ensure PostgreSQL is running
+- Verify the database credentials in your `.env` file
+- Check that the database exists and the user has appropriate permissions
 
-2. **Verify Railway database is running:**
-   - Check Railway dashboard for database status
-   - Ensure the database is not paused
+### Frontend Build Issues
 
-3. **Test connection:**
-   ```bash
-   cd server
-   python -c "from app import app; from models import db; app.app_context().push(); db.engine.connect(); print('Connection successful!')"
-   ```
+- Clear the npm cache: `npm cache clean --force`
+- Delete `node_modules` and reinstall: `rm -rf node_modules && npm install`
 
 ### CORS Issues
 
-If you get CORS errors, ensure:
-- Backend is running on port 5000
-- Frontend is running on port 3000
-- CORS is properly configured in `server/config.py`
-
-### JWT Token Issues
-
-If authentication fails:
-1. Check JWT_SECRET_KEY is set in `.env`
-2. Ensure token is being sent in Authorization header
-3. Verify token format: `Bearer <token>`
-
-## Production Deployment
-
-For production deployment:
-
-1. Set `FLASK_ENV=production` in your environment
-2. Use a strong JWT_SECRET_KEY
-3. Configure proper CORS origins
-4. Use a production WSGI server like Gunicorn
-5. Set up proper logging and monitoring
-
-## Support
-
-If you encounter any issues:
-1. Check the console logs for both frontend and backend
-2. Verify all environment variables are set correctly
-3. Ensure database connection is working
-4. Check that all dependencies are installed 
+- Ensure that CORS is properly configured in the Flask backend
+- Check that the frontend is making requests to the correct API URL
