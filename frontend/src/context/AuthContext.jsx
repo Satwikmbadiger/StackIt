@@ -30,9 +30,11 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error('Failed to load user profile:', err);
       setError('Failed to load user profile');
-      // Clear token if invalid
-      localStorage.removeItem('token');
-      setUser(null);
+      // Only log out if error is 401 Unauthorized
+      if (err.response && err.response.status === 401) {
+        localStorage.removeItem('token');
+        setUser(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -99,7 +101,13 @@ export const AuthProvider = ({ children }) => {
         isAdmin,
       }}
     >
-      {children}
+      {loading ? (
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+          <span>Loading...</span>
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };

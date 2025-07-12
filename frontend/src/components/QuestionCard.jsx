@@ -3,45 +3,33 @@ import { Link } from 'react-router-dom';
 
 const QuestionCard = ({ question }) => {
   return (
-    <div className="border-b border-gray-200 py-4">
-      <div className="flex items-start">
-        {/* Vote and Answer Stats */}
-        <div className="flex flex-col items-center mr-4 text-center w-16">
-          <div className="text-gray-600">
-            <span className="font-bold text-lg">{question.answer_count}</span>
-            <div className="text-xs">
-              {question.answer_count === 1 ? 'answer' : 'answers'}
-            </div>
-          </div>
+    <div className="question-card bg-white rounded-lg shadow-md p-4 mb-4">
+      <div className="qc-header flex justify-between items-start">
+        <Link to={`/questions/${question.id}`} className="qc-title text-xl font-semibold text-primary-600 hover:text-primary-800">
+          {question.title}
+        </Link>
+        <div className="qc-meta text-sm text-gray-500">
+          <span className="qc-answers font-medium text-gray-800">{question.answer_count} {question.answer_count === 1 ? 'answer' : 'answers'}</span>
+          <span className="qc-dot mx-1">•</span>
+          <span className="qc-date">{new Date(question.created_at).toLocaleDateString()}</span>
         </div>
-        
-        {/* Question Content */}
-        <div className="flex-1">
-          <Link to={`/questions/${question.id}`} className="text-xl font-semibold text-primary-600 hover:text-primary-800">
-            {question.title}
+      </div>
+      <div className="qc-tags flex flex-wrap gap-2 mt-2">
+        {question.tags.map(tag => (
+          <Link
+            key={tag.id}
+            to={`/?tag=${tag.name}`}
+            className="qc-tag bg-gray-100 text-gray-800 px-3 py-1 rounded-md text-xs hover:bg-gray-200"
+          >
+            {tag.name}
           </Link>
-          
-          <div className="flex flex-wrap gap-2 mt-2">
-            {question.tags.map(tag => (
-              <Link
-                key={tag.id}
-                to={`/?tag=${tag.name}`}
-                className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-xs hover:bg-gray-200"
-              >
-                {tag.name}
-              </Link>
-            ))}
-          </div>
-          
-          <div className="mt-2 flex items-center text-sm text-gray-500">
-            <span>Asked by</span>
-            <Link to={`/users/${question.user_id}`} className="ml-1 font-medium text-primary-600 hover:text-primary-800">
-              {question.username}
-            </Link>
-            <span className="mx-1">•</span>
-            <span>{new Date(question.created_at).toLocaleString()}</span>
-          </div>
-        </div>
+        ))}
+      </div>
+      <div className="qc-user mt-2 text-sm text-gray-500">
+        <span>Asked by </span>
+        <Link to={`/users/${question.user_id}`} className="qc-username font-medium text-primary-600 hover:text-primary-800">
+          {question.username}
+        </Link>
       </div>
     </div>
   );
