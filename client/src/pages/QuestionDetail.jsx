@@ -55,26 +55,20 @@ const QuestionDetail = () => {
         <div>Loading...</div>
       ) : (
         <div className="answers-list">
-          {question.answers.length === 0 && <div>No answers yet.</div>}
+          {question.answers.length === 0 && <div className="empty-answers">No answers yet.</div>}
           {question.answers.map(a => (
-            <div key={a.id} className={`answer ${a.accepted ? 'accepted' : ''}`}>
-              <div className="answer-meta">
-                <span>By {a.author}</span>
-                <span>Votes: {a.votes}</span>
-                {question.acceptedAnswerId === a.id && <span className="accepted-label">Accepted</span>}
-              </div>
-              <div className="answer-text" dangerouslySetInnerHTML={{ __html: a.text }} />
-              <VoteButtons score={a.votes} onUpvote={() => handleAnswerVote(a.id, 1)} onDownvote={() => handleAnswerVote(a.id, -1)} />
-              {currentUser && currentUser.username === question.author && (
-                <AcceptAnswerButton accepted={a.accepted} onAccept={() => handleAccept(a.id)} />
-              )}
-            </div>
+            <AnswerCard
+              key={a.id}
+              answer={a}
+              onVote={delta => handleAnswerVote(a.id, delta)}
+              onAccept={() => handleAccept(a.id)}
+              canAccept={currentUser && question.author === currentUser.username}
+            />
           ))}
         </div>
       )}
-      {currentUser && (
-        <AnswerForm onSubmit={handlePostAnswer} />
-      )}
+      {/* Only logged-in users can answer */}
+      {currentUser && <AnswerForm onSubmit={handlePostAnswer} />}
       {error && <div className="form-error">{error}</div>}
     </div>
   );
