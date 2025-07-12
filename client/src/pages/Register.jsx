@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../AppContext';
+import AuthLayout from '../components/AuthLayout';
 
 const Register = () => {
   const { register, loading } = useAppContext();
@@ -35,10 +36,10 @@ const Register = () => {
         <>Already have an account? <a href="/login" className="auth-link">Sign In</a></>
       }
     >
-      <form onSubmit={handleSubmit}>
-        <input name="username" type="email" placeholder="Email" value={form.username} onChange={handleChange} required />
-        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
-        <button type="submit" disabled={loading}>{loading ? 'Registering...' : 'Sign Up'}</button>
+      <form onSubmit={handleSubmit} className="auth-form">
+        <input name="username" type="email" placeholder="Email" value={form.username} onChange={handleChange} required className="auth-input" />
+        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required className="auth-input" />
+        <button type="submit" disabled={loading} className="auth-btn">{loading ? 'Registering...' : 'Sign Up'}</button>
         {error && <div className="form-error">{error}</div>}
       </form>
     </AuthLayout>
