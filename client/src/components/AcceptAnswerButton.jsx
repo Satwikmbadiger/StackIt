@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import './AcceptAnswerButton.css';
@@ -49,5 +50,6 @@ const AcceptAnswerButton = ({ answerId, questionAuthor, currentUser, isAccepted,
     </div>
   );
 };
+
 
 export default AcceptAnswerButton;

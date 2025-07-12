@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import './RichTextEditor.css';
 
@@ -185,6 +186,7 @@ const RichTextEditor = ({ value, onChange, placeholder = "Write your content her
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         suppressContentEditableWarning
+
       />
     </div>
   );
