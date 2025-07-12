@@ -1,148 +1,269 @@
-# StackIt - Q&A Web Application
+# StackIt – A Minimal Q&A Forum Platform
 
-A full-stack Q&A platform similar to Stack Overflow, built with React and Flask.
+StackIt is a modern, feature-rich question-and-answer platform designed for collaborative learning and structured knowledge sharing. Built with React frontend and Flask backend, it provides a clean, user-friendly interface focused on the core experience of asking and answering questions within a community.
 
-## Features
+## 🚀 Features
 
-### Frontend (React)
-- 🌙 **Dark Mode UI** - Professional dark theme
-- 📱 **Responsive Design** - Works on desktop, tablet, and mobile
-- 🔍 **Search & Filters** - Find questions easily
-- 🏷️ **Tag System** - Organize questions by topics
-- 📊 **Question Stats** - Vote count, answer count, views
-- 📄 **Pagination** - Navigate through multiple pages
+### Core Features (Implemented)
 
-### Backend (Flask)
-- 🚀 **REST API** - Clean API endpoints
-- 📊 **Sample Data** - Pre-loaded with example questions
-- 🔌 **CORS Enabled** - Frontend-backend communication
-- 🛠️ **Easy to Extend** - Add new features easily
+#### 1. **Rich Text Editor** ✨
+- **Bold, Italic, Strikethrough** formatting
+- **Numbered lists and Bullet points**
+- **Emoji insertion** with picker
+- **Hyperlink insertion** with URL validation
+- **Image upload** with preview
+- **Text alignment** (Left, Center, Right)
+- **Real-time preview** of formatted content
 
-## Quick Start
+#### 2. **Advanced Tag System** 🏷️
+- **Multi-select tag input** with search functionality
+- **Predefined tag suggestions** (100+ technology tags)
+- **Custom tag creation** by typing and pressing Enter
+- **Tag removal** with click-to-remove interface
+- **Visual tag display** with color-coded styling
 
-### 1. Backend Setup
+#### 3. **Voting System** ⬆️⬇️
+- **Upvote/Downvote** questions and answers
+- **Real-time vote count** updates
+- **User vote tracking** (prevents duplicate voting)
+- **Visual feedback** for voted items
+- **Login-required** voting with helpful prompts
 
-```bash
-cd backend
-python -m venv venv
+#### 4. **Answer Acceptance** ✅
+- **Question owners** can mark answers as accepted
+- **Visual acceptance indicators** with badges
+- **One accepted answer** per question limit
+- **Acceptance status** clearly displayed
+- **Permission-based** access control
 
-# Windows
-venv\Scripts\activate
+#### 5. **Notification System** 🔔
+- **Real-time notifications** for:
+  - New answers to your questions
+  - Comments on your answers
+  - @username mentions
+- **Unread notification count** badge
+- **Dropdown notification list** with timestamps
+- **Mark all as read** functionality
+- **Notification history** (last 10 notifications)
 
-# macOS/Linux
-source venv/bin/activate
+#### 6. **User Authentication** 👤
+- **User registration** and login
+- **Session management** with tokens
+- **Protected routes** for authenticated features
+- **User-specific** content and actions
 
-pip install -r requirements.txt
-python app.py
-```
+#### 7. **Modern UI/UX** 🎨
+- **Responsive design** for all screen sizes
+- **Clean, modern interface** with smooth animations
+- **Hover effects** and visual feedback
+- **Loading states** and error handling
+- **Accessibility features** (focus management, ARIA labels)
 
-Backend will run on `http://localhost:5000`
-
-### 2. Frontend Setup
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
-Frontend will run on `http://localhost:3000`
-
-## Project Structure
-
-```
-stackit/
-├── backend/            # Flask API server
-│   ├── app.py         # Main Flask application
-│   ├── requirements.txt # Python dependencies
-│   └── README.md      # Backend documentation
-├── frontend/           # React application
-│   ├── src/
-│   │   ├── components/ # React components
-│   │   ├── styles/    # CSS stylesheets
-│   │   ├── App.js     # Main app component
-│   │   └── index.js   # Entry point
-│   ├── public/        # Static files
-│   ├── package.json   # Node dependencies
-│   └── README.md      # Frontend documentation
-└── README.md          # This file
-```
-
-## API Endpoints
-
-- `GET /api/questions` - Get all questions
-- `GET /api/questions/<id>` - Get specific question
-- `GET /` - Health check
-
-## Technology Stack
+## 🛠️ Technology Stack
 
 ### Frontend
-- **React 18** - Modern React with hooks
-- **CSS3** - Custom dark theme styling
-- **Responsive Design** - Mobile-first approach
+- **React 18** with functional components and hooks
+- **React Router** for navigation
+- **Context API** for state management
+- **CSS3** with modern styling and animations
+- **Fetch API** for HTTP requests
 
 ### Backend
-- **Flask** - Lightweight Python web framework
-- **Flask-CORS** - Cross-origin resource sharing
-- **Python 3.8+** - Backend programming language
+- **Flask** Python web framework
+- **SQLite** database (can be upgraded to PostgreSQL)
+- **JWT** authentication
+- **RESTful API** design
+- **CORS** support for cross-origin requests
 
-## Features in Detail
+## 📁 Project Structure
 
-### Navigation Header
-- StackIt logo
-- "Ask New Question" button
-- Filter buttons (Newest, Unanswered, More dropdown)
-- Search bar with search icon
-- Login button
-- Mobile-responsive hamburger menu
+```
+StackIt/
+├── client/                 # React frontend
+│   ├── src/
+│   │   ├── components/     # Reusable UI components
+│   │   │   ├── RichTextEditor.jsx
+│   │   │   ├── TagSelector.jsx
+│   │   │   ├── VoteButtons.jsx
+│   │   │   ├── AcceptAnswerButton.jsx
+│   │   │   ├── NotificationBell.jsx
+│   │   │   └── AnswerForm.jsx
+│   │   ├── pages/         # Page components
+│   │   ├── AppContext.jsx # Global state management
+│   │   └── api.js         # API communication
+│   └── public/
+├── server/                # Flask backend
+│   ├── routes/           # API endpoints
+│   ├── models.py         # Database models
+│   └── app.py           # Main application
+└── README.md
+```
 
-### Question Cards
-- Vote count, answer count, and view count
-- Question title and description
-- Tag system with colored badges
-- User information and timestamp
-- Hover effects and transitions
+## 🚀 Getting Started
 
-### Responsive Design
-- Desktop: Full layout with sidebar stats
-- Tablet: Adjusted spacing and fonts
-- Mobile: Stacked layout, collapsible navigation
+### Prerequisites
+- Node.js (v14 or higher)
+- Python 3.8 or higher
+- pip (Python package manager)
 
-## Development
+### Installation
 
-### Adding New Features
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd StackIt
+   ```
 
-1. **New API Endpoints**: Add routes in `backend/app.py`
-2. **New Components**: Create in `frontend/src/components/`
-3. **Styling**: Add CSS in `frontend/src/styles/`
+2. **Set up the backend**
+   ```bash
+   cd server
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   python app.py
+   ```
 
-### Code Style
-- Use functional components with hooks
-- Follow dark theme color variables
-- Maintain responsive design patterns
-- Use semantic HTML elements
+3. **Set up the frontend**
+   ```bash
+   cd client
+   npm install
+   npm start
+   ```
 
-## Future Enhancements
+4. **Access the application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
 
-- [ ] User authentication and authorization
-- [ ] Question creation and editing
-- [ ] Voting system
-- [ ] Answer system
-- [ ] User profiles
-- [ ] Real-time notifications
-- [ ] Search functionality
-- [ ] Database integration (PostgreSQL/MongoDB)
-- [ ] Image upload support
-- [ ] Email notifications
+## 📖 Usage Guide
 
-## Contributing
+### For Users
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+#### Asking Questions
+1. **Login** to your account (or register if new)
+2. **Click "Ask Question"** in the navigation
+3. **Enter a descriptive title** for your question
+4. **Use the rich text editor** to write your question:
+   - Format text with **bold**, *italic*, ~~strikethrough~~
+   - Add lists (numbered or bulleted)
+   - Insert emojis 😀 and images 📷
+   - Add hyperlinks 🔗
+   - Align text left, center, or right
+5. **Select relevant tags** from the dropdown or create custom ones
+6. **Submit** your question
 
-## License
+#### Answering Questions
+1. **Navigate** to any question
+2. **Use the rich text editor** to write your answer
+3. **Submit** your answer
+4. **Vote** on other answers to help the community
 
-This project is open source and available under the [MIT License](LICENSE).
+#### Voting and Accepting
+- **Upvote** helpful content (▲)
+- **Downvote** incorrect or unhelpful content (▼)
+- **Question owners** can accept the best answer (✅)
+
+#### Notifications
+- **Click the bell icon** 🔔 to view notifications
+- **Unread count** is shown on the badge
+- **Mark all as read** to clear notifications
+- **Real-time updates** for new notifications
+
+### For Developers
+
+#### Adding New Features
+1. **Frontend components** go in `client/src/components/`
+2. **API endpoints** go in `server/routes/`
+3. **Database models** go in `server/models.py`
+4. **Styling** uses CSS modules or component-specific CSS
+
+#### API Endpoints
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `GET /api/questions` - Get all questions
+- `POST /api/questions` - Create new question
+- `POST /api/answers` - Post answer
+- `POST /api/votes` - Vote on content
+- `POST /api/answers/accept` - Accept answer
+- `GET /api/notifications` - Get user notifications
+
+## 🎯 Key Features in Detail
+
+### Rich Text Editor
+The custom rich text editor provides a comprehensive editing experience:
+- **Toolbar interface** with intuitive icons
+- **Real-time formatting** with visual feedback
+- **Image upload** with drag-and-drop support
+- **Emoji picker** with categorized emojis
+- **Link dialog** with URL validation
+- **Keyboard shortcuts** for common actions
+
+### Tag System
+Advanced tagging with search and suggestions:
+- **100+ predefined tags** covering programming, frameworks, and tools
+- **Search functionality** to find specific tags
+- **Custom tag creation** for unique topics
+- **Visual tag chips** with remove buttons
+- **Tag validation** and duplicate prevention
+
+### Notification System
+Real-time notification management:
+- **WebSocket-like** real-time updates
+- **Notification categories** (answers, comments, mentions)
+- **Time-based formatting** (just now, 5m ago, 2h ago)
+- **Unread indicators** with visual badges
+- **Bulk actions** (mark all as read)
+
+## 🔧 Configuration
+
+### Environment Variables
+Create a `.env` file in the server directory:
+```env
+FLASK_SECRET_KEY=your-secret-key
+DATABASE_URL=sqlite:///stackit.db
+JWT_SECRET_KEY=your-jwt-secret
+```
+
+### Customization
+- **Tag categories** can be modified in `TagSelector.jsx`
+- **Rich text editor** features can be extended in `RichTextEditor.jsx`
+- **Notification types** can be added in the backend
+- **Styling** can be customized in component CSS files
+
+## 🧪 Testing
+
+### Frontend Testing
+```bash
+cd client
+npm test
+```
+
+### Backend Testing
+```bash
+cd server
+python -m pytest
+```
+
+## 📝 Contributing
+
+1. **Fork** the repository
+2. **Create** a feature branch
+3. **Make** your changes
+4. **Test** thoroughly
+5. **Submit** a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🤝 Support
+
+For support and questions:
+- Create an issue in the repository
+- Check the documentation
+- Review the code comments
+
+---
+
+**StackIt** - Empowering communities through knowledge sharing! 🚀
+
+
