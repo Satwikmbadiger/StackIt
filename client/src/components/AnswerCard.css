@@ -1,0 +1,50 @@
+.answer-card {
+  background: var(--bg-card);
+  border-radius: 1.1rem;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.10);
+  padding: 1.1rem 1.1rem 0.7rem 1.1rem;
+  margin-bottom: 1.2rem;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  position: relative;
+}
+.answer-card.accepted {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 4px 18px 0 rgba(0,212,170,0.12);
+}
+.answer-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+.accepted-pill {
+  background: var(--accent-cyan);
+  color: #1A1D29;
+  border-radius: 0.8rem;
+  padding: 0.18rem 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-left: 0.7rem;
+}
+.answer-text {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  margin-bottom: 0.3rem;
+  min-height: 1.3em;
+}
+.answer-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  margin-top: 0.2rem;
+}
+@media (max-width: 600px) {
+  .answer-card {
+    padding: 0.7rem 0.3rem;
+  }
+}

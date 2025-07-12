@@ -11,7 +11,9 @@ const Navbar = ({ user, onLogout }) => (
     <div className="navbar__links">
       <Link to="/">Home</Link>
       <Link to="/ask">Ask Question</Link>
-      <NotificationBell />
+
+      <NotificationBell notifications={user?.notifications || []} onMarkAllRead={user?.onMarkAllRead || (()=>{})} />
+
       {user ? (
         <>
           <span>Welcome, {user.username}</span>

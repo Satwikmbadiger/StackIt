@@ -1,6 +1,4 @@
 // api.js - All backend API calls for Flask integration
-// For now, these are mock implementations. Replace fetch URLs with Flask endpoints.
-
 const API_BASE = 'http://localhost:5000/api';
 
 class ApiError extends Error {
@@ -38,7 +36,16 @@ export const api = {
     return handleResponse(response);
   },
 
-  // Questions endpoints
+  async getCurrentUser() {
+    const response = await fetch(`${API_BASE}/auth/me`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    return handleResponse(response);
+  },
+
+  // Questions
   async getQuestions() {
     const response = await fetch(`${API_BASE}/questions`, {
       headers: {
@@ -68,7 +75,7 @@ export const api = {
     return handleResponse(response);
   },
 
-  // Answers endpoints
+  // Answers
   async postAnswer(data) {
     // Use user_id from data (passed from context) like vote function
     const response = await fetch(`${API_BASE}/answers`, {
@@ -81,9 +88,8 @@ export const api = {
     return handleResponse(response);
   },
 
-  // Voting endpoints
-  async vote(data) {
-    const response = await fetch(`${API_BASE}/votes`, {
+  async acceptAnswer(data) {
+    const response = await fetch(`${API_BASE}/answers/accept`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -93,10 +99,12 @@ export const api = {
     return handleResponse(response);
   },
 
+
   // Accept answer endpoint
   async acceptAnswer(data) {
     const token = localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/answers/accept`, {
+
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -107,7 +115,7 @@ export const api = {
     return handleResponse(response);
   },
 
-  // Notifications endpoints
+  // Notifications
   async getNotifications() {
     const response = await fetch(`${API_BASE}/notifications`, {
       headers: {
@@ -127,6 +135,7 @@ export const api = {
     return handleResponse(response);
   },
 
+
   // Get current user
   async getCurrentUser() {
     const response = await fetch(`${API_BASE}/auth/me`, {
@@ -144,21 +153,19 @@ export const api = {
   },
 
   // Utility function to check if user is authenticated
+
   isAuthenticated() {
     return localStorage.getItem('token') !== null;
   },
 
-  // Store token after login
   setToken(token) {
     localStorage.setItem('token', token);
   },
 
-  // Remove token on logout
   removeToken() {
     localStorage.removeItem('token');
   },
 
-  // Check if token exists
   hasToken() {
     return !!localStorage.getItem('token');
   },

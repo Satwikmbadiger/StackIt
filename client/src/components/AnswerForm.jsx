@@ -9,7 +9,7 @@ const AnswerForm = ({ questionId, onAnswerPosted }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!content.trim()) {
       setError('Please provide an answer.');
       return;
@@ -19,10 +19,10 @@ const AnswerForm = ({ questionId, onAnswerPosted }) => {
       const newAnswer = await postAnswer(questionId, {
         content,
       });
-      
+
       setContent('');
       setError('');
-      
+
       if (onAnswerPosted) {
         onAnswerPosted(newAnswer);
       }
@@ -48,12 +48,12 @@ const AnswerForm = ({ questionId, onAnswerPosted }) => {
           onChange={setContent}
           placeholder="Write your answer here... Use the toolbar above to format your text."
         />
-        
+
         {error && <div className="form-error">{error}</div>}
-        
+
         <div className="answer-form-actions">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading || !content.trim()}
             className="submit-answer-btn"
           >

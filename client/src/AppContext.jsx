@@ -6,53 +6,47 @@ export const useAppContext = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  // Notifications are stored per user for demo
   const [notifications, setNotifications] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState({ message: '', type: '' });
 
-  // Check authentication status and fetch questions on mount
   useEffect(() => {
     (async () => {
       setLoading(true);
-      
-      // Check if user is authenticated (check both token and user in localStorage)
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (api.hasToken() && user) {
+
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+
+      if (api.hasToken() && storedUser) {
         try {
           const userRes = await api.getCurrentUser();
           if (userRes.success) {
             setCurrentUser({ ...userRes.user, notifications: [], onMarkAllRead: markAllRead });
-            // Update localStorage with fresh user data
             localStorage.setItem('user', JSON.stringify(userRes.user));
           } else {
-            api.removeToken(); // Remove invalid token
-            localStorage.removeItem('user'); // Remove invalid user
+            api.removeToken();
+            localStorage.removeItem('user');
           }
         } catch (error) {
           console.error('Auth check failed:', error);
-          api.removeToken(); // Remove invalid token
-          localStorage.removeItem('user'); // Remove invalid user
+          api.removeToken();
+          localStorage.removeItem('user');
         }
-      } else if (user) {
-        // If we have user in localStorage but no token, just use the stored user
-        setCurrentUser({ ...user, notifications: [], onMarkAllRead: markAllRead });
+      } else if (storedUser) {
+        setCurrentUser({ ...storedUser, notifications: [], onMarkAllRead: markAllRead });
       }
-      
-      // Fetch questions
+
       try {
         const qs = await api.getQuestions();
         setQuestions(qs);
       } catch (error) {
         console.error('Failed to fetch questions:', error);
       }
-      
+
       setLoading(false);
     })();
   }, []);
 
-  // Auth
   const login = async (username, password) => {
     setLoading(true);
     try {
@@ -60,7 +54,6 @@ export const AppProvider = ({ children }) => {
       setLoading(false);
       if (res.success) {
         api.setToken(res.token);
-        // Store user object in localStorage for user_id access
         localStorage.setItem('user', JSON.stringify(res.user));
         setCurrentUser({ ...res.user, notifications: [], onMarkAllRead: markAllRead });
         setNotifications([]);
@@ -92,24 +85,31 @@ export const AppProvider = ({ children }) => {
 
   const logout = () => {
     api.removeToken();
-    localStorage.removeItem('user'); // Remove user from localStorage
+    localStorage.removeItem('user');
     setCurrentUser(null);
     setNotifications([]);
     setNotification({ message: 'Logged out.', type: 'info' });
   };
 
-  // Notifications
   const addNotification = (message) => {
     const newNotif = { message, read: false, time: new Date().toLocaleTimeString() };
     setNotifications(prev => [newNotif, ...prev].slice(0, 10));
-    if (currentUser) setCurrentUser(u => ({ ...u, notifications: [newNotif, ...(u.notifications || [])].slice(0, 10) }));
-  };
-  const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-    if (currentUser) setCurrentUser(u => ({ ...u, notifications: (u.notifications || []).map(n => ({ ...n, read: true })) }));
+    if (currentUser)
+      setCurrentUser(u => ({
+        ...u,
+        notifications: [newNotif, ...(u.notifications || [])].slice(0, 10)
+      }));
   };
 
-  // Questions
+  const markAllRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    if (currentUser)
+      setCurrentUser(u => ({
+        ...u,
+        notifications: (u.notifications || []).map(n => ({ ...n, read: true }))
+      }));
+  };
+
   const refreshQuestions = async () => {
     setLoading(true);
     const qs = await api.getQuestions();
@@ -131,7 +131,6 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // Answers
   const postAnswer = async (questionId, data) => {
     setLoading(true);
     const a = await api.postAnswer({ questionId, ...data, user_id: currentUser?.id });
@@ -140,32 +139,25 @@ export const AppProvider = ({ children }) => {
     return a;
   };
 
-  // Voting
   const vote = async (type, id, delta) => {
-    // Optimistically update the UI
-    setQuestions(prevQuestions => prevQuestions.map(q => {
-      if (type === 'questions' && q.id === id) {
-        return {
-          ...q,
-          votes: (q.votes || 0) + delta,
-          userVote: delta // or set to 0 if removing vote
-        };
-      }
-      return q;
-    }));
-    // Fire and forget backend update
-    api.vote({ type, id, delta, user_id: currentUser?.id })
-      .then(() => {
-        // Optionally, refresh from backend in the background
-        refreshQuestions();
+    setQuestions(prev =>
+      prev.map(q => {
+        if (type === 'questions' && q.id === id) {
+          return { ...q, votes: (q.votes || 0) + delta, userVote: delta };
+        }
+        return q;
       })
-      .catch(() => {
-        // Optionally, revert optimistic update on error
-        refreshQuestions();
-      });
+    );
+
+    try {
+      await api.vote({ type, id, delta, user_id: currentUser?.id });
+    } catch {
+      console.error("Vote failed, refreshing...");
+    } finally {
+      await refreshQuestions();
+    }
   };
 
-  // Accept answer
   const acceptAnswer = async (answerId) => {
     setLoading(true);
     await api.acceptAnswer({ answerId });
@@ -176,7 +168,7 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        currentUser: currentUser ? { ...currentUser, notifications: notifications, onMarkAllRead: markAllRead } : null,
+        currentUser: currentUser ? { ...currentUser, notifications, onMarkAllRead: markAllRead } : null,
         questions,
         loading,
         notification,
