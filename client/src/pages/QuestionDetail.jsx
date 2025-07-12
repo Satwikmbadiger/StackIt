@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAppContext } from '../AppContext';
 import AnswerForm from '../components/AnswerForm';
 import VoteButtons from '../components/VoteButtons';
@@ -46,7 +46,7 @@ const QuestionDetail = () => {
         <div className="question-header">
           <h2>{question.title}</h2>
           <div className="question-meta">
-            <span>By {question.author}</span>
+            <span>By <Link to={`/users/${question.author_id || ''}`}>{question.author}</Link></span>
             <span>•</span>
             <span>{new Date(question.created_at).toLocaleDateString()}</span>
           </div>
@@ -106,7 +106,7 @@ const QuestionDetail = () => {
                       />
 
                       <div className="answer-meta">
-                        <span>By {answer.author}</span>
+                        <span>By <Link to={`/users/${answer.author_id || ''}`}>{answer.author}</Link></span>
                         <span>•</span>
                         <span>{new Date(answer.created_at).toLocaleDateString()}</span>
                       </div>

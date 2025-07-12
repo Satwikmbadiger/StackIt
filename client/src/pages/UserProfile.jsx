@@ -1,46 +1,61 @@
-import React from 'react';
-import { useAppContext } from '../AppContext';
-import QuestionCard from '../components/QuestionCard';
-import AnswerCard from '../components/AnswerCard';
-import './UserProfile.css';
 
-// OWNER: Assign to team member responsible for user features
+import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { api } from '../api';
+
 const UserProfile = () => {
-  const { currentUser, questions } = useAppContext();
-  if (!currentUser) return <div className="profile-error">You must be logged in to view your profile.</div>;
+  const { id } = useParams();
+  const [user, setUser] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const userQuestions = questions.filter(q => q.author === currentUser.username);
-  const userAnswers = [];
-  questions.forEach(q => {
-    q.answers.forEach(a => {
-      if (a.author === currentUser.username) {
-        userAnswers.push({ ...a, questionTitle: q.title, questionId: q.id });
+  useEffect(() => {
+    const fetchUserAndQuestions = async () => {
+      setLoading(true);
+      try {
+        // Fetch user info
+        const userRes = await api.getUser(id);
+        if (userRes.success) {
+          setUser(userRes.user);
+        }
+        // Fetch all questions and filter by user_id
+        const allQuestions = await api.getQuestions();
+        setQuestions(allQuestions.filter(q => q.author === userRes.user.username));
+      } catch (e) {
+        setUser(null);
+        setQuestions([]);
       }
-    });
-  });
+      setLoading(false);
+    };
+    fetchUserAndQuestions();
+  }, [id]);
+
+  if (loading) return <div>Loading user profile...</div>;
+  if (!user) return <div>User not found.</div>;
 
   return (
-    <div className="profile-page">
-      <div className="profile-card">
-        <div className="profile-avatar">{currentUser.username[0].toUpperCase()}</div>
-        <div className="profile-username">@{currentUser.username}</div>
-        <div className="profile-email">{currentUser.email || '—'}</div>
-      </div>
-      <div className="profile-section">
-        <h3>Your Questions</h3>
-        {userQuestions.length === 0 ? <div className="profile-empty">No questions posted yet.</div> : userQuestions.map(q => <QuestionCard key={q.id} question={q} />)}
-      </div>
-      <div className="profile-section">
-        <h3>Your Answers</h3>
-        {userAnswers.length === 0 ? <div className="profile-empty">No answers posted yet.</div> : userAnswers.map(a => (
-          <div key={a.id + '-' + a.questionId} className="profile-answer-wrap">
-            <div className="profile-answer-q">On: <a href={`/questions/${a.questionId}`}>{a.questionTitle}</a></div>
-            <AnswerCard answer={a} />
-          </div>
-        ))}
-      </div>
+    <div className="user-profile-page">
+      <h2>{user.username}'s Profile</h2>
+      <div>Email: {user.email}</div>
+      <div>Role: {user.role}</div>
+      <div>Joined: {new Date(user.created_at).toLocaleDateString()}</div>
+      <h3>Questions Asked</h3>
+      {questions.length === 0 ? (
+        <div>No questions asked yet.</div>
+      ) : (
+        <ul>
+          {questions.map(q => (
+            <li key={q.id}>
+              <Link to={`/questions/${q.id}`}>{q.title}</Link>
+            </li>
+          ))}
+        </ul>
+      )}
+
     </div>
   );
 };
 
-export default UserProfile;
+
+export default UserProfile; 
+

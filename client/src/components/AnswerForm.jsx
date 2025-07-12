@@ -18,7 +18,6 @@ const AnswerForm = ({ questionId, onAnswerPosted }) => {
     try {
       const newAnswer = await postAnswer(questionId, {
         content,
-        author: currentUser.username,
       });
 
       setContent('');

@@ -77,6 +77,7 @@ export const api = {
 
   // Answers
   async postAnswer(data) {
+    // Use user_id from data (passed from context) like vote function
     const response = await fetch(`${API_BASE}/answers`, {
       method: 'POST',
       headers: {
@@ -98,12 +99,16 @@ export const api = {
     return handleResponse(response);
   },
 
-  // Voting
-  async vote(data) {
-    const response = await fetch(`${API_BASE}/votes`, {
+
+  // Accept answer endpoint
+  async acceptAnswer(data) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_BASE}/answers/accept`, {
+
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
       },
       body: JSON.stringify(data),
     });
@@ -130,7 +135,25 @@ export const api = {
     return handleResponse(response);
   },
 
-  // Token management
+
+  // Get current user
+  async getCurrentUser() {
+    const response = await fetch(`${API_BASE}/auth/me`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    return handleResponse(response);
+  },
+
+  // Get user by ID
+  async getUser(id) {
+    const response = await fetch(`${API_BASE}/users/${id}`);
+    return handleResponse(response);
+  },
+
+  // Utility function to check if user is authenticated
+
   isAuthenticated() {
     return localStorage.getItem('token') !== null;
   },

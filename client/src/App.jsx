@@ -7,6 +7,7 @@ import QuestionDetail from './pages/QuestionDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import QuestionForm from './components/QuestionForm';
+import UserProfile from './pages/UserProfile';
 import { AppProvider, useAppContext } from './AppContext';
 
 function AppRoutes() {
@@ -23,6 +24,7 @@ function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/questions/:id" element={<QuestionDetail />} />
+            <Route path="/users/:id" element={<UserProfile />} />
             <Route path="*" element={<div>404 Not Found</div>} />
           </Routes>
         </main>
